@@ -1,29 +1,54 @@
-import client from "../database";
-
+import client from '../database';
 
 export type Order = {
-  id: number;
+  id?: number;
   user_id: number;
-  status: string;
-};  
+  status: 'active' | 'complete';
+};
 
-export class OrderModel {
-  async create(order: Order): Promise<Order> {
-    try {
-      const sql = 'INSERT INTO orders (user_id, status) VALUES($1, $2) RETURNING *';
-      const result = await client.query(sql, [order.user_id, order.status]);
-      return result.rows[0];
-    } catch (err) {
-      throw new Error(`Could not create order for user ${order.user_id}. Error: ${err}`);
-    }
+export type OrderProduct = {
+  id?: number;
+  order_id: number;
+  product_id: number;
+  quantity: number;
+};
+
+export class OrderStore {
+
+  async create(o: Order): Promise<Order> {
+    const conn = await client.connect();
+    const sql = `INSERT INTO orders (user_id, status) 
+                 VALUES ($1, $2) RETURNING *`;
+    const result = await conn.query(sql, [o.user_id, o.status]);
+    conn.release();
+    return result.rows[0];
   }
 
-async completeOrderByUserId(userId: number): Promise<Order> {
-  try {
-    const sql = 'UPDATE orders SET status = $1 WHERE user_id = $2 AND status = $3 RETURNING *';
-    const result = await client.query(sql, ['complete', userId, 'active']);
+  // إضافة product على order
+  async addProduct(op: OrderProduct): Promise<OrderProduct> {
+    const conn = await client.connect();
+    const sql = `INSERT INTO order_products (order_id, product_id, quantity) 
+                 VALUES ($1, $2, $3) RETURNING *`;
+    const result = await conn.query(sql, [op.order_id, op.product_id, op.quantity]);
+    conn.release();
     return result.rows[0];
-  } catch (err) {
-    throw new Error(`Could not complete order for user ${userId}. Error: ${err}`);
-  }}
+  }
+
+  // الـ Order الحالي للـ user
+  async currentOrderByUser(userId: number): Promise<Order> {
+    const conn = await client.connect();
+    const sql = `SELECT * FROM orders WHERE user_id=$1 AND status='active'`;
+    const result = await conn.query(sql, [userId]);
+    conn.release();
+    return result.rows[0];
+  }
+
+  // الـ Orders المكتملة للـ user
+  async completedOrdersByUser(userId: number): Promise<Order[]> {
+    const conn = await client.connect();
+    const sql = `SELECT * FROM orders WHERE user_id=$1 AND status='complete'`;
+    const result = await conn.query(sql, [userId]);
+    conn.release();
+    return result.rows;
+  }
 }

@@ -155,3 +155,69 @@ All 37 tests should pass.
 ---
 
 ## Project Structure
+src/
+
+├── handlers/
+
+│   ├── products.ts
+
+│   ├── user.ts
+
+│   ├── orders.ts
+
+│   └── helpers.ts
+
+├── models/
+
+│   ├── product.ts
+
+│   ├── user.ts
+
+│   └── order.ts
+
+├── database.ts
+
+└── server.ts
+
+spec/
+
+├── models/
+
+│   ├── product.spec.ts
+
+│   ├── user.spec.ts
+
+│   └── order.spec.ts
+
+└── handlers/
+
+├── product.spec.ts
+
+├── user.spec.ts
+
+└── order.spec.ts
+
+migrations/
+
+.env
+
+database.json
+
+package.json
+
+REQUIREMENTS.md
+
+---
+
+## Technologies Used
+
+- Node.js
+- Express.js
+- PostgreSQL
+- TypeScript
+- db-migrate
+- bcrypt
+- JWT (jsonwebtoken)
+- Jest
+- Supertest
+- cross-env

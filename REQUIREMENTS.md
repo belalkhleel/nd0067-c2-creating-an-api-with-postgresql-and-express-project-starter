@@ -1,140 +1,60 @@
 # Storefront Backend API Requirements
 
-## Server Configuration
+## API Endpoints
 
-### Server Port
+### Products
 
-* API Server: `3000`
+| Method | Endpoint        | Auth Required | Description          |
+|--------|-----------------|---------------|----------------------|
+| GET    | `/products`     | ❌            | Get all products     |
+| GET    | `/products/:id` | ❌            | Get product by id    |
+| POST   | `/products`     | ✅            | Create a new product |
+| PUT    | `/products/:id` | ✅            | Update a product     |
+| DELETE | `/products/:id` | ✅            | Delete a product     |
 
-### Database Port
+### Users
 
-* PostgreSQL: `5432`
+| Method | Endpoint         | Auth Required | Description                          |
+|--------|------------------|---------------|--------------------------------------|
+| GET    | `/users`         | ✅            | Get all users                        |
+| GET    | `/users/:id`     | ✅            | Get user by id                       |
+| POST   | `/users`         | ❌            | Create a new user (returns JWT token)|
+| POST   | `/users/login`   | ❌            | Login and get JWT token              |
+| PUT    | `/users/:id`     | ✅            | Update a user                        |
+| DELETE | `/users/:id`     | ✅            | Delete a user                        |
 
----
+### Orders
 
-# Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-DB_USER=postgres
-DB_HOST=127.0.0.1
-DB_NAME=storefront
-DB_PASSWORD=your_password
-DB_PORT=5432
-
-BCRYPT_PASSWORD=your_pepper
-SALT_ROUNDS=10
-JWT_SECRET=your_jwt_secret
-
-ENV=dev
-```
-
----
-
-# Package Installation
-
-Install project dependencies:
-
-```bash
-npm install
-```
+| Method | Endpoint                  | Auth Required | Description               |
+|--------|---------------------------|---------------|---------------------------|
+| GET    | `/orders/users/:userId`   | ✅            | Get current order by user |
+| POST   | `/orders`                 | ✅            | Create a new order        |
+| POST   | `/orders/:id/addProducts` | ✅            | Add product to order      |
+| PUT    | `/orders/:id`             | ✅            | Update order status       |
+| DELETE | `/orders/:id`             | ✅            | Delete an order           |
 
 ---
 
-# Database Setup
+## Database Schema
 
-## Create Databases
+### Users Table
 
-Open PostgreSQL and create the databases:
+| Column          | Type         | Constraints          |
+|-----------------|--------------|----------------------|
+| id              | SERIAL       | Primary Key          |
+| firstname       | VARCHAR(50)  | NOT NULL             |
+| lastname        | VARCHAR(50)  | NOT NULL             |
+| password_digest | TEXT         | NOT NULL             |
 
-```sql
-CREATE DATABASE storefront;
-CREATE DATABASE storefront_test;
-```
+### Products Table
 
-## Configure database.json
+| Column | Type          | Constraints |
+|--------|---------------|-------------|
+| id     | SERIAL        | Primary Key |
+| name   | VARCHAR(250)  | NOT NULL    |
+| price  | NUMERIC(10,2) | NOT NULL    |
 
-```json
-{
-  "dev": {
-    "driver": "pg",
-    "host": "127.0.0.1",
-    "database": "storefront",
-    "user": "postgres",
-    "password": "your_password"
-  },
-  "test": {
-    "driver": "pg",
-    "host": "127.0.0.1",
-    "database": "storefront_test",
-    "user": "postgres",
-    "password": "your_password"
-  }
-}
-```
-
-## Run Migrations
-
-```bash
-npm run db-up
-```
-
-Rollback migrations:
-
-```bash
-npm run db-down
-```
-
----
-
-# Running the Application
-
-Development:
-
-```bash
-npm start
-```
-
-Watch mode:
-
-```bash
-npm run watch
-```
-
-The API will be available at:
-
-```
-http://localhost:3000
-```
-
----
-
-# Database Schema
-
-## Users Table
-
-| Column    | Type         | Constraints |
-|-----------|--------------|-------------|
-| id        | SERIAL       | Primary Key |
-| firstname | VARCHAR(50)  | NOT NULL    |
-| lastname  | VARCHAR(50)  | NOT NULL    |
-| password  | TEXT         | NOT NULL (bcrypt hashed) |
-
----
-
-## Products Table
-
-| Column   | Type          | Constraints |
-|----------|---------------|-------------|
-| id       | SERIAL        | Primary Key |
-| name     | VARCHAR(250)  | NOT NULL    |
-| price    | NUMERIC(10,2) | NOT NULL    |
-| category | VARCHAR(100)  | OPTIONAL    |
-
----
-
-## Orders Table
+### Orders Table
 
 | Column  | Type        | Constraints            |
 |---------|-------------|------------------------|
@@ -142,11 +62,7 @@ http://localhost:3000
 | user_id | INTEGER     | Foreign Key → users.id |
 | status  | VARCHAR(10) | active / complete      |
 
----
-
-## Order_Products Table
-
-This table implements the many-to-many relationship between orders and products.
+### Orders_Products Table
 
 | Column     | Type    | Constraints               |
 |------------|---------|---------------------------|
@@ -157,20 +73,19 @@ This table implements the many-to-many relationship between orders and products.
 
 ---
 
-# Data Shapes
+## Data Shapes
 
-## Product
+### Product
 
 ```json
 {
   "id": 1,
   "name": "Laptop",
-  "price": 1500.00,
-  "category": "Electronics"
+  "price": 1500.00
 }
 ```
 
-## User
+### User
 
 ```json
 {
@@ -180,7 +95,7 @@ This table implements the many-to-many relationship between orders and products.
 }
 ```
 
-## Order
+### Order
 
 ```json
 {
@@ -190,167 +105,13 @@ This table implements the many-to-many relationship between orders and products.
 }
 ```
 
----
-
-# API Endpoints
-
-## Products
-
-### Index Products
-
-```http
-GET /products
-```
-
-Returns all products.
-
----
-
-### Show Product
-
-```http
-GET /products/:id
-```
-
-Returns a single product.
-
----
-
-### Create Product
-
-```http
-POST /products
-```
-
-Token Required.
-
-Request Body:
+### Order Product
 
 ```json
 {
-  "name": "Laptop",
-  "price": 1500.00,
-  "category": "Electronics"
-}
-```
-
----
-
-## Users
-
-### Index Users
-
-```http
-GET /users
-```
-
-Token Required.
-
----
-
-### Show User
-
-```http
-GET /users/:id
-```
-
-Token Required.
-
----
-
-### Create User
-
-```http
-POST /users
-```
-
-Request Body:
-
-```json
-{
-  "firstname": "Belal",
-  "lastname": "Khleel",
-  "password": "password123"
-}
-```
-
-Returns a JWT token.
-
----
-
-## Orders
-
-### Create Order
-
-```http
-POST /orders
-```
-
-Token Required.
-
-Request Body:
-
-```json
-{
-  "user_id": 1,
-  "status": "active"
-}
-```
-
----
-
-### Add Product to Order
-
-```http
-POST /orders/:id/addProducts
-```
-
-Token Required.
-
-Request Body:
-
-```json
-{
+  "id": 1,
+  "order_id": 1,
   "product_id": 1,
   "quantity": 2
 }
 ```
-
----
-
-### Current Order By User
-
-```http
-GET /orders/users/:userId
-```
-
-Token Required.
-
-Returns the active order for a user.
-
----
-
-# Available NPM Scripts
-
-```bash
-npm start        # Start the server
-npm run watch    # Watch mode
-npm run test     # Run tests
-npm run tsc      # Compile TypeScript
-npm run db-up    # Run migrations
-npm run db-down  # Rollback migrations
-```
-
----
-
-# Technologies Used
-
-* Node.js
-* Express.js
-* PostgreSQL
-* TypeScript
-* db-migrate
-* bcrypt
-* JWT (jsonwebtoken)
-* Jest
-* Supertest

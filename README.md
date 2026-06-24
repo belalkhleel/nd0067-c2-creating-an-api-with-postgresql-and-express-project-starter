@@ -4,14 +4,13 @@ A RESTful API built with Node.js, Express, TypeScript, and PostgreSQL.
 
 ---
 
-# Requirements
+## Requirements
 
-Before running the project, make sure the following software is installed:
+Before running the project, make sure the following are installed:
 
-* Node.js
-* npm
-* PostgreSQL
-* db-migrate (installed automatically through project dependencies)
+- Node.js
+- npm
+- PostgreSQL
 
 Verify installation:
 
@@ -23,9 +22,7 @@ psql --version
 
 ---
 
-# Ports
-
-The application uses the following ports:
+## Ports
 
 | Service             | Port |
 |---------------------|------|
@@ -34,9 +31,7 @@ The application uses the following ports:
 
 ---
 
-# Package Installation
-
-Install all project dependencies:
+## Package Installation
 
 ```bash
 npm install
@@ -44,20 +39,18 @@ npm install
 
 ---
 
-# Database Setup
+## Database Setup
 
-## Step 1: Create Database
+### Step 1: Create Databases
 
-Open PostgreSQL and create the databases:
+Open PostgreSQL and run:
 
 ```sql
 CREATE DATABASE storefront;
 CREATE DATABASE storefront_test;
 ```
 
----
-
-## Step 2: Configure Environment Variables
+### Step 2: Configure Environment Variables
 
 Create a `.env` file in the root directory:
 
@@ -65,6 +58,7 @@ Create a `.env` file in the root directory:
 DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_NAME=storefront
+DB_TEST_NAME=storefront_test
 DB_USER=postgres
 DB_PASSWORD=your_password
 
@@ -75,13 +69,9 @@ JWT_SECRET=your_secret_key
 ENV=dev
 ```
 
-Update the values according to your PostgreSQL installation.
+### Step 3: Configure database.json
 
----
-
-## Step 3: Configure database.json
-
-Update the database connection settings inside `database.json`:
+Update `database.json` with your PostgreSQL credentials:
 
 ```json
 {
@@ -102,148 +92,66 @@ Update the database connection settings inside `database.json`:
 }
 ```
 
----
-
-## Step 4: Run Database Migrations
-
-Create all required tables:
+### Step 4: Run Migrations
 
 ```bash
 npm run db-up
 ```
 
-If you need to rollback migrations:
+For the test database:
+
+```bash
+npm run test-db-up
+```
+
+To rollback:
 
 ```bash
 npm run db-down
+npm run test-db-down
 ```
 
 ---
 
-# Running the Server
-
-Start the application:
+## Running the Server
 
 ```bash
 npm start
 ```
 
-or
+or in watch mode:
 
 ```bash
 npm run watch
 ```
 
-The API will be available at:
-
-```
-http://localhost:3000
-```
+The API will be available at `http://localhost:3000`.
 
 ---
 
-# Running Tests
-
-Run all unit and integration tests:
+## Running Tests
 
 ```bash
 npm run test
 ```
 
-If all tests pass successfully, the setup is complete.
+All 37 tests should pass.
 
 ---
 
-# Available Scripts
+## Available Scripts
 
-| Command           | Description               |
-|-------------------|---------------------------|
-| `npm start`       | Start the server          |
-| `npm run watch`   | Run server in watch mode  |
-| `npm run test`    | Execute all tests         |
-| `npm run db-up`   | Run migrations            |
-| `npm run db-down` | Rollback migrations       |
-| `npm run tsc`     | Compile TypeScript        |
-
----
-
-# Project Structure
-
-```
-src/
-├── handlers/
-│   ├── products.ts
-│   ├── user.ts
-│   ├── orders.ts
-│   └── helpers.ts
-├── models/
-│   ├── product.ts
-│   ├── user.ts
-│   └── order.ts
-├── database.ts
-└── server.ts
-spec/
-├── models/
-│   ├── product.spec.ts
-│   ├── user.spec.ts
-│   └── order.spec.ts
-└── handlers/
-    ├── product.spec.ts
-    ├── user.spec.ts
-    └── order.spec.ts
-migrations/
-.env
-database.json
-package.json
-REQUIREMENTS.md
-```
+| Command               | Description                      |
+|-----------------------|----------------------------------|
+| `npm start`           | Start the server                 |
+| `npm run watch`       | Run server in watch mode         |
+| `npm run test`        | Run all tests                    |
+| `npm run tsc`         | Compile TypeScript               |
+| `npm run db-up`       | Run dev migrations               |
+| `npm run db-down`     | Rollback dev migrations          |
+| `npm run test-db-up`  | Run test migrations              |
+| `npm run test-db-down`| Rollback test migrations         |
 
 ---
 
-# API Endpoints
-
-## Products
-
-| Method | Endpoint        | Auth Required | Description           |
-|--------|-----------------|:---:|-----------------------|
-| GET    | `/products`     | ❌  | Get all products      |
-| GET    | `/products/:id` | ❌  | Get product by id     |
-| POST   | `/products`     | ✅  | Create a new product  |
-
----
-
-## Users
-
-| Method | Endpoint      | Auth Required | Description                          |
-|--------|---------------|:---:|--------------------------------------|
-| GET    | `/users`      | ✅  | Get all users                        |
-| GET    | `/users/:id`  | ✅  | Get user by id                       |
-| POST   | `/users`      | ❌  | Create a new user (returns JWT token)|
-
----
-
-## Orders
-
-| Method | Endpoint                    | Auth Required | Description              |
-|--------|-----------------------------|:---:|--------------------------|
-| POST   | `/orders`                   | ✅  | Create a new order       |
-| POST   | `/orders/:id/addProducts`   | ✅  | Add product to order     |
-| GET    | `/orders/users/:userId`     | ✅  | Get current order by user|
-
----
-
-# Technologies Used
-
-* Node.js
-* Express.js
-* PostgreSQL
-* TypeScript
-* db-migrate
-* bcrypt
-* JWT (jsonwebtoken)
-* Jest
-* Supertest
-
----
-
-After completing the steps above, the application should be connected to PostgreSQL, migrations should be applied successfully, and all tests should pass.
+## Project Structure

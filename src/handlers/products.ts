@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import { ProductModel } from '../models/product';
 import { authenticateToken } from './helpers';
 
-
 const productModel = new ProductModel();
 
 const createProduct = async (req: Request, res: Response) => {
@@ -25,18 +24,35 @@ const getAllProducts = async (req: Request, res: Response) => {
 
 const getProductById = async (req: Request, res: Response) => {
     try {
-        const product = await productModel.show(parseInt(req.params.id)); 
+        const product = await productModel.show(parseInt(req.params.id));
         res.json(product);
     } catch (err) {
         res.status(400).json(err);
     }
 };
 
+const updateProduct = async (req: Request, res: Response) => {
+    try {
+        const product = await productModel.update(parseInt(req.params.id), req.body);
+        res.json(product);
+    } catch (err) {
+        res.status(400).json(err);
+    }
+};
 
+const deleteProduct = async (req: Request, res: Response) => {
+    try {
+        const product = await productModel.delete(parseInt(req.params.id));
+        res.json(product);
+    } catch (err) {
+        res.status(400).json(err);
+    }
+};
 
 export default function productRoutes(app: express.Application) {
     app.post('/products', authenticateToken, createProduct);
     app.get('/products', getAllProducts);
     app.get('/products/:id', getProductById);
+    app.put('/products/:id', authenticateToken, updateProduct);
+    app.delete('/products/:id', authenticateToken, deleteProduct);
 };
-

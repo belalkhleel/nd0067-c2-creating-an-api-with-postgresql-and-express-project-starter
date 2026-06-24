@@ -3,10 +3,10 @@
     "target": "ES6",
     "module": "commonjs",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "strict": false,
     "esModuleInterop": true,
-    "types": ["jasmine"]
+    "types": ["jest"]
   },
   "include": ["src/**/*", "spec/**/*"],
   "exclude": ["node_modules"]

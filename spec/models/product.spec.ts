@@ -8,9 +8,11 @@ describe('Product Model', () => {
   it('should create a product', async () => {
     const result = await store.create({
       name: 'Test Product',
-      price: 10    } as Product);
+      price: 10
+    } as Product);
     productId = result.id as number;
     expect(result.name).toBe('Test Product');
+    expect(result.price).toBe(10);
   });
 
   it('should return a list of products', async () => {
@@ -23,5 +25,14 @@ describe('Product Model', () => {
     expect(result.id).toBe(productId);
   });
 
+  it('should update a product', async () => {
+    const result = await store.update(productId, { name: 'Updated Product', price: 20 });
+    expect(result.name).toBe('Updated Product');
+    expect(result.price).toBe(20);
+  });
 
+  it('should delete a product', async () => {
+    const result = await store.delete(productId);
+    expect(result.id).toBe(productId);
+  });
 });

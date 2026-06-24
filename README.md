@@ -158,43 +158,24 @@ All 37 tests should pass.
 src/
 
 ├── handlers/
-
 │   ├── products.ts
-
 │   ├── user.ts
-
 │   ├── orders.ts
-
 │   └── helpers.ts
-
 ├── models/
-
 │   ├── product.ts
-
 │   ├── user.ts
-
 │   └── order.ts
-
 ├── database.ts
-
 └── server.ts
-
 spec/
-
 ├── models/
-
 │   ├── product.spec.ts
-
 │   ├── user.spec.ts
-
 │   └── order.spec.ts
-
 └── handlers/
-
 ├── product.spec.ts
-
 ├── user.spec.ts
-
 └── order.spec.ts
 
 migrations/

@@ -1,54 +1,249 @@
 # Storefront Backend Project
 
-## Getting Started
+A RESTful API built with Node.js, Express, TypeScript, and PostgreSQL.
 
-This repo contains a basic Node and Express app to get you started in constructing an API. To get started, clone this repo and run `yarn` in your terminal at the project root.
+---
 
-## Required Technologies
-Your application must make use of the following libraries:
-- Postgres for the database
-- Node/Express for the application logic
-- dotenv from npm for managing environment variables
-- db-migrate from npm for migrations
-- jsonwebtoken from npm for working with JWTs
-- jasmine from npm for testing
+# Requirements
 
-## Steps to Completion
+Before running the project, make sure the following software is installed:
 
-### 1. Plan to Meet Requirements
+* Node.js
+* npm
+* PostgreSQL
+* db-migrate (installed automatically through project dependencies)
 
-In this repo there is a `REQUIREMENTS.md` document which outlines what this API needs to supply for the frontend, as well as the agreed upon data shapes to be passed between front and backend. This is much like a document you might come across in real life when building or extending an API. 
+Verify installation:
 
-Your first task is to read the requirements and update the document with the following:
-- Determine the RESTful route for each endpoint listed. Add the RESTful route and HTTP verb to the document so that the frontend developer can begin to build their fetch requests.    
-**Example**: A SHOW route: 'blogs/:id' [GET] 
+```bash
+node -v
+npm -v
+psql --version
+```
 
-- Design the Postgres database tables based off the data shape requirements. Add to the requirements document the database tables and columns being sure to mark foreign keys.   
-**Example**: You can format this however you like but these types of information should be provided
-Table: Books (id:varchar, title:varchar, author:varchar, published_year:varchar, publisher_id:string[foreign key to publishers table], pages:number)
+---
 
-**NOTE** It is important to remember that there might not be a one to one ratio between data shapes and database tables. Data shapes only outline the structure of objects being passed between frontend and API, the database may need multiple tables to store a single shape. 
+# Ports
 
-### 2.  DB Creation and Migrations
+The application uses the following ports:
 
-Now that you have the structure of the databse outlined, it is time to create the database and migrations. Add the npm packages dotenv and db-migrate that we used in the course and setup your Postgres database. If you get stuck, you can always revisit the database lesson for a reminder. 
+| Service             | Port |
+|---------------------|------|
+| Backend Server      | 3000 |
+| PostgreSQL Database | 5432 |
 
-You must also ensure that any sensitive information is hashed with bcrypt. If any passwords are found in plain text in your application it will not pass.
+---
 
-### 3. Models
+# Package Installation
 
-Create the models for each database table. The methods in each model should map to the endpoints in `REQUIREMENTS.md`. Remember that these models should all have test suites and mocks.
+Install all project dependencies:
 
-### 4. Express Handlers
+```bash
+npm install
+```
 
-Set up the Express handlers to route incoming requests to the correct model method. Make sure that the endpoints you create match up with the enpoints listed in `REQUIREMENTS.md`. Endpoints must have tests and be CORS enabled. 
+---
 
-### 5. JWTs
+# Database Setup
 
-Add JWT functionality as shown in the course. Make sure that JWTs are required for the routes listed in `REQUIUREMENTS.md`.
+## Step 1: Create Database
 
-### 6. QA and `README.md`
+Open PostgreSQL and create the databases:
 
-Before submitting, make sure that your project is complete with a `README.md`. Your `README.md` must include instructions for setting up and running your project including how you setup, run, and connect to your database. 
+```sql
+CREATE DATABASE storefront;
+CREATE DATABASE storefront_test;
+```
 
-Before submitting your project, spin it up and test each endpoint. If each one responds with data that matches the data shapes from the `REQUIREMENTS.md`, it is ready for submission!
+---
+
+## Step 2: Configure Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_NAME=storefront
+DB_USER=postgres
+DB_PASSWORD=your_password
+
+BCRYPT_PASSWORD=your_pepper
+SALT_ROUNDS=10
+JWT_SECRET=your_secret_key
+
+ENV=dev
+```
+
+Update the values according to your PostgreSQL installation.
+
+---
+
+## Step 3: Configure database.json
+
+Update the database connection settings inside `database.json`:
+
+```json
+{
+  "dev": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "storefront",
+    "user": "postgres",
+    "password": "your_password"
+  },
+  "test": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "storefront_test",
+    "user": "postgres",
+    "password": "your_password"
+  }
+}
+```
+
+---
+
+## Step 4: Run Database Migrations
+
+Create all required tables:
+
+```bash
+npm run db-up
+```
+
+If you need to rollback migrations:
+
+```bash
+npm run db-down
+```
+
+---
+
+# Running the Server
+
+Start the application:
+
+```bash
+npm start
+```
+
+or
+
+```bash
+npm run watch
+```
+
+The API will be available at:
+
+```
+http://localhost:3000
+```
+
+---
+
+# Running Tests
+
+Run all unit and integration tests:
+
+```bash
+npm run test
+```
+
+If all tests pass successfully, the setup is complete.
+
+---
+
+# Available Scripts
+
+| Command           | Description               |
+|-------------------|---------------------------|
+| `npm start`       | Start the server          |
+| `npm run watch`   | Run server in watch mode  |
+| `npm run test`    | Execute all tests         |
+| `npm run db-up`   | Run migrations            |
+| `npm run db-down` | Rollback migrations       |
+| `npm run tsc`     | Compile TypeScript        |
+
+---
+
+# Project Structure
+
+```
+src/
+├── handlers/
+│   ├── products.ts
+│   ├── user.ts
+│   ├── orders.ts
+│   └── helpers.ts
+├── models/
+│   ├── product.ts
+│   ├── user.ts
+│   └── order.ts
+├── database.ts
+└── server.ts
+spec/
+├── models/
+│   ├── product.spec.ts
+│   ├── user.spec.ts
+│   └── order.spec.ts
+└── handlers/
+    ├── product.spec.ts
+    ├── user.spec.ts
+    └── order.spec.ts
+migrations/
+.env
+database.json
+package.json
+REQUIREMENTS.md
+```
+
+---
+
+# API Endpoints
+
+## Products
+
+| Method | Endpoint        | Auth Required | Description           |
+|--------|-----------------|:---:|-----------------------|
+| GET    | `/products`     | ❌  | Get all products      |
+| GET    | `/products/:id` | ❌  | Get product by id     |
+| POST   | `/products`     | ✅  | Create a new product  |
+
+---
+
+## Users
+
+| Method | Endpoint      | Auth Required | Description                          |
+|--------|---------------|:---:|--------------------------------------|
+| GET    | `/users`      | ✅  | Get all users                        |
+| GET    | `/users/:id`  | ✅  | Get user by id                       |
+| POST   | `/users`      | ❌  | Create a new user (returns JWT token)|
+
+---
+
+## Orders
+
+| Method | Endpoint                    | Auth Required | Description              |
+|--------|-----------------------------|:---:|--------------------------|
+| POST   | `/orders`                   | ✅  | Create a new order       |
+| POST   | `/orders/:id/addProducts`   | ✅  | Add product to order     |
+| GET    | `/orders/users/:userId`     | ✅  | Get current order by user|
+
+---
+
+# Technologies Used
+
+* Node.js
+* Express.js
+* PostgreSQL
+* TypeScript
+* db-migrate
+* bcrypt
+* JWT (jsonwebtoken)
+* Jest
+* Supertest
+
+---
+
+After completing the steps above, the application should be connected to PostgreSQL, migrations should be applied successfully, and all tests should pass.

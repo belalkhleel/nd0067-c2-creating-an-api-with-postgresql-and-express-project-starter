@@ -9,7 +9,9 @@
   "test": "jest",
   "tsc": "tsc",
   "db-up": "db-migrate up",
-  "db-down": "db-migrate down"
+  "db-down": "db-migrate down",
+   "test-db-up": "db-migrate up --env test",
+  "test-db-down": "db-migrate down --env test"
 },
 "jest": {
   "preset": "ts-jest",

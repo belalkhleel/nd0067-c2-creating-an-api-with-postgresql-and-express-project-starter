@@ -177,17 +177,11 @@ spec/
 ├── product.spec.ts
 ├── user.spec.ts
 └── order.spec.ts
-
 migrations/
-
 .env
-
 database.json
-
 package.json
-
 REQUIREMENTS.md
-
 ---
 
 ## Technologies Used

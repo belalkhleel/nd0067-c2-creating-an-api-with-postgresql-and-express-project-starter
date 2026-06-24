@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { OrderStore } from '../models/order';
+import { OrderProduct, OrderStore } from '../models/order';
 import { authenticateToken } from './helpers';
 
 const orderStore = new OrderStore();
@@ -17,11 +17,19 @@ const createOrder = async (req: Request, res: Response) => {
 
 
 const addProductToOrder = async (req: Request, res: Response) => {
-try{    const orderId = parseInt(req.params.id);
-    res.status(200).json({ message: `Product added to order ${orderId}` });
-}catch (err) {
-    console.error(err);
-    res.status(400).json({ message: 'Failed to add product to order' });}
+try{  
+      const orderId = parseInt(req.params.id);
+      const orderProduct: OrderProduct = {
+        order_id: orderId,
+        product_id: req.body.product_id,
+        quantity: req.body.quantity
+      };
+      const addedProduct = await orderStore.addProduct(orderProduct);
+      res.status(200).json({ message: `Product added to order ${addedProduct.product_id}` });
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({ message: 'Failed to add product to order' });
+      }
 
 }
 
@@ -40,6 +48,6 @@ const getcurrentOrderByUser = async (req: Request, res: Response) => {
 
 export default function orderRoutes(app: express.Application) {
     app.post('/orders', authenticateToken, createOrder);
-    app.post('/orders/:id/products', authenticateToken, addProductToOrder);
+    app.post('/orders/:id/addProducts', authenticateToken, addProductToOrder);
     app.get('/orders/users/:userId', authenticateToken, getcurrentOrderByUser);
 }

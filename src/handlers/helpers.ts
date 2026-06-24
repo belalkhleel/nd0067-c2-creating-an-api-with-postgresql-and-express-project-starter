@@ -22,6 +22,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
         jwt.verify(token, secretKey);
         next();
     } catch (err) {
+        console.error(err);
         res.status(403).json({ message: 'Invalid access token' });
     }};
 

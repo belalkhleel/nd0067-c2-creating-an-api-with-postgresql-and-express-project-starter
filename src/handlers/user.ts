@@ -30,7 +30,7 @@ const getUserById = async (req: Request, res: Response) => {
 };
 
 export default function userRoutes(app: express.Application) {
-    app.post('/users',authenticateToken, createUser,);
+    app.post('/users', createUser,);
     app.get('/users',authenticateToken, getAllUsers);
     app.get('/users/:id',authenticateToken, getUserById);
 };

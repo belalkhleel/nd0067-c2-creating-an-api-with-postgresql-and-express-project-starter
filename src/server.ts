@@ -15,7 +15,10 @@ userRoutes(app) ;
 productRoutes(app);
 orderRoutes(app);
 
+export default app;
 
-app.listen(3000, function () {
-    console.log(`starting app on: ${address}`)
-})
+if (process.env.ENV !== 'test') {
+  app.listen(3000, function () {
+    console.log(`starting app on: ${address}`);
+  });
+}

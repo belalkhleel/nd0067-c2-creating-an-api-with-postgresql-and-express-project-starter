@@ -6,7 +6,9 @@
     "rootDir": ".",
     "strict": false,
     "esModuleInterop": true,
-    "types": ["jest"]
+    "types": ["jest"],
+    "skipLibCheck": true
+
   },
   "include": ["src/**/*", "spec/**/*"],
   "exclude": ["node_modules"]

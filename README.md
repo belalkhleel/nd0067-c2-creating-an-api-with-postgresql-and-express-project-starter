@@ -155,8 +155,8 @@ All 37 tests should pass.
 ---
 
 ## Project Structure
+```
 src/
-
 ├── handlers/
 │   ├── products.ts
 │   ├── user.ts
@@ -174,14 +174,15 @@ spec/
 │   ├── user.spec.ts
 │   └── order.spec.ts
 └── handlers/
-├── product.spec.ts
-├── user.spec.ts
-└── order.spec.ts
+    ├── product.spec.ts
+    ├── user.spec.ts
+    └── order.spec.ts
 migrations/
 .env
 database.json
 package.json
 REQUIREMENTS.md
+```
 ---
 
 ## Technologies Used
